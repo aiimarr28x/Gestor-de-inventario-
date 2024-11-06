@@ -1,0 +1,153 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Estructura para cada producto en el inventario (nodo del árbol binario de búsqueda)
+struct Producto {
+    int id;            // Identificador único del producto
+    string nombre;     // Nombre del producto
+    int cantidad;      // Cantidad en el inventario
+    double precio;     // Precio del producto
+    Producto* izquierda; // Puntero al nodo izquierdo
+    Producto* derecha;  // Puntero al nodo derecho
+
+    // Constructor para inicializar un nuevo producto
+    Producto(int id, string nombre, int cantidad, double precio)
+        : id(id), nombre(nombre), cantidad(cantidad), precio(precio), izquierda(nullptr), derecha(nullptr) {}
+};
+
+// Clase para manejar el inventario usando un árbol binario de búsqueda (BST)
+class Inventario {
+private:
+    Producto* raiz; // Raíz del árbol
+
+    // Función recursiva para insertar un nuevo producto en el árbol
+    Producto* insertar(Producto* nodo, int id, string nombre, int cantidad, double precio) {
+        if (nodo == nullptr) { // Caso base: espacio vacío para un nuevo nodo
+            return new Producto(id, nombre, cantidad, precio);
+        }
+        if (id < nodo->id) { // Insertar en el subárbol izquierdo si el ID es menor
+            nodo->izquierda = insertar(nodo->izquierda, id, nombre, cantidad, precio);
+        } else if (id > nodo->id) { // Insertar en el subárbol derecho si el ID es mayor
+            nodo->derecha = insertar(nodo->derecha, id, nombre, cantidad, precio);
+        }
+        return nodo;
+    }
+
+    // Función recursiva para buscar un producto en el árbol por ID
+    Producto* buscar(Producto* nodo, int id) {
+        if (nodo == nullptr || nodo->id == id) { // Caso base: producto encontrado o nodo vacío
+            return nodo;
+        }
+        if (id < nodo->id) { // Buscar en el subárbol izquierdo si el ID buscado es menor
+            return buscar(nodo->izquierda, id);
+        } else { // Buscar en el subárbol derecho si el ID buscado es mayor
+            return buscar(nodo->derecha, id);
+        }
+    }
+
+    // Función para recorrer el árbol en orden y mostrar todos los productos
+    void listarProductos(Producto* nodo) {
+        if (nodo != nullptr) {
+            listarProductos(nodo->izquierda);
+            cout << "ID: " << nodo->id << ", Nombre: " << nodo->nombre
+                 << ", Cantidad: " << nodo->cantidad << ", Precio: $" << nodo->precio << endl;
+            listarProductos(nodo->derecha);
+        }
+    }
+
+    // Función para eliminar un producto del inventario por ID
+    Producto* eliminarProducto(Producto* nodo, int id) {
+        if (nodo == nullptr) return nodo;
+        
+        if (id < nodo->id) { // Buscar el producto a eliminar en el subárbol izquierdo
+            nodo->izquierda = eliminarProducto(nodo->izquierda, id);
+        } else if (id > nodo->id) { // Buscar el producto a eliminar en el subárbol derecho
+            nodo->derecha = eliminarProducto(nodo->derecha, id);
+        } else { 
+            // Caso: Nodo con un hijo o sin hijos
+            if (nodo->izquierda == nullptr) {
+                Producto* temp = nodo->derecha;
+                delete nodo;
+                return temp;
+            } else if (nodo->derecha == nullptr) {
+                Producto* temp = nodo->izquierda;
+                delete nodo;
+                return temp;
+            }
+            // Caso: Nodo con dos hijos
+            Producto* temp = minValorNodo(nodo->derecha);
+            nodo->id = temp->id;
+            nodo->nombre = temp->nombre;
+            nodo->cantidad = temp->cantidad;
+            nodo->precio = temp->precio;
+            nodo->derecha = eliminarProducto(nodo->derecha, temp->id);
+        }
+        return nodo;
+    }
+
+    // Función auxiliar para encontrar el nodo con el menor valor (usado en la eliminación)
+    Producto* minValorNodo(Producto* nodo) {
+        Producto* actual = nodo;
+        while (actual && actual->izquierda != nullptr) {
+            actual = actual->izquierda;
+        }
+        return actual;
+    }
+
+public:
+    Inventario() : raiz(nullptr) {} // Constructor para inicializar el inventario vacío
+
+    // Método para agregar un nuevo producto al inventario
+    void agregarProducto(int id, string nombre, int cantidad, double precio) {
+        raiz = insertar(raiz, id, nombre, cantidad, precio);
+    }
+
+    // Método para buscar y mostrar un producto por su ID
+    void buscarProducto(int id) {
+        Producto* producto = buscar(raiz, id);
+        if (producto != nullptr) {
+            cout << "Producto encontrado - ID: " << producto->id
+                 << ", Nombre: " << producto->nombre
+                 << ", Cantidad: " << producto->cantidad
+                 << ", Precio: $" << producto->precio << endl;
+        } else {
+            cout << "Producto no encontrado." << endl;
+        }
+    }
+
+    // Método para eliminar un producto del inventario
+    void eliminarProducto(int id) {
+        raiz = eliminarProducto(raiz, id);
+        cout << "Producto eliminado." << endl;
+    }
+
+    // Método para listar todos los productos en el inventario
+    void listarProductos() {
+        listarProductos(raiz);
+    }
+};
+
+int main() {
+    Inventario inventario;
+
+    // Agregar productos
+    inventario.agregarProducto(1, "Laptop", 10, 999.99);
+    inventario.agregarProducto(2, "Teclado", 25, 49.99);
+    inventario.agregarProducto(3, "Mouse", 50, 25.99);
+
+    cout << "Lista de productos en el inventario:" << endl;
+    inventario.listarProductos();
+
+    cout << "\nBuscar producto con ID 2:" << endl;
+    inventario.buscarProducto(2);
+
+    cout << "\nEliminar producto con ID 1:" << endl;
+    inventario.eliminarProducto(1);
+
+    cout << "\nLista de productos después de la eliminación:" << endl;
+    inventario.listarProductos();
+
+    return 0;
+}
