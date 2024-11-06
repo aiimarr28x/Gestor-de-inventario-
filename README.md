@@ -1,25 +1,13 @@
 # Gestor de Inventario
 
-Este proyecto es un sistema de inventario para una tienda, implementado en C++ utilizando un árbol binario de búsqueda (BST) para gestionar los productos. Cada producto está representado por un nodo en el árbol, facilitando operaciones de búsqueda, inserción, y eliminación de productos.
+Este proyecto implementa un sistema básico de gestión de inventario para una tienda, utilizando C++. Incluye funcionalidades para agregar, buscar, actualizar, eliminar y contar productos. La organización de los productos se realiza mediante diferentes estructuras de datos para optimizar el manejo del inventario.
 
-## Funcionalidades
+## Características
 
-- **Agregar Producto**: Inserta un producto nuevo en el inventario.
-- **Buscar Producto**: Busca un producto por su ID y muestra sus detalles.
-- **Eliminar Producto**: Elimina un producto del inventario por ID.
-- **Listar Productos**: Muestra todos los productos en orden de ID.
-
-## Estructuras de Datos Utilizadas
-
-- **Árbol Binario de Búsqueda (BST)**: Cada nodo representa un producto. La estructura permite realizar operaciones de inserción, búsqueda y eliminación de manera eficiente.
-
-## Cómo Usar
-
-### Compilación
-
-1. Clona este repositorio en tu máquina local.
-2. Abre una terminal en el directorio del proyecto.
-3. Compila el código con el siguiente comando:
-   ```bash
-   g++ -o inventario main.cp
-4. ./inventario
+- **Agregar Producto**: Agrega un nuevo producto al inventario.
+- **Buscar Producto**: Busca un producto específico por ID.
+- **Actualizar Producto**: Modifica la cantidad de un producto existente.
+- **Eliminar Producto**: Elimina un producto del inventario.
+- **Contar Productos**: Muestra el total de productos en el inventario.
+- **Mostrar Inventario Completo**: Lista todos los productos en orden.
+- **Historial de Cambios
